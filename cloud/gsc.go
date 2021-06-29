@@ -53,7 +53,7 @@ func (g *GCS) SetCredentials() error {
 }
 
 // Upload video file on google cloud storage
-func (g *GCS) UploadFile(filePath string) error {
+func UploadFile(filePath string) error {
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -64,11 +64,9 @@ func (g *GCS) UploadFile(filePath string) error {
 	}
 	defer client.Close()
 
-	if err = uploadToCloud(client, filePath, g.Bucket); err != nil {
+	if err = uploadToCloud(client, filePath, Gcs.Bucket); err != nil {
 		return err
 	}
-
-	fmt.Printf("Success to upload bolb : %v \n", filePath)
 
 	return nil
 }

@@ -29,11 +29,11 @@ func InitRecording() (Ffmpeg, error) {
 	var ff Ffmpeg
 	env, err := os.Open("cam.json")
 	if err != nil {
-		fmt.Printf("Failed to open jsonfile: %v", err)
+		return ff, fmt.Errorf("Failed to open jsonfile: %v", err)
 	}
 	byteValue, _ := ioutil.ReadAll(env)
 	if err = json.Unmarshal(byteValue, &ff); err != nil {
-		fmt.Printf("Faild to unmarshal: %v", err)
+		return ff, fmt.Errorf("Faild to unmarshal: %v", err)
 	}
 	fmt.Println("Success to set Recording Env")
 	return ff, nil

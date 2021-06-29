@@ -30,7 +30,7 @@ func main() {
 	}
 	// // Time ticker
 	recordTicker := time.NewTicker(time.Minute * 1)
-	uploadTicker := time.NewTicker(time.Minute * 15)
+	uploadTicker := time.NewTicker(time.Minute * 5)
 
 	done := make(chan bool, 1)
 	go func() {
