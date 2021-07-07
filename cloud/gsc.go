@@ -85,11 +85,17 @@ func UploadFiles(dirPath string) error {
 
 	dir, _ := ioutil.ReadDir(dirPath)
 
-	for _, fpath := range dir {
-		if err = uploadToCloud(client, dirPath+fpath.Name(), Gcs.Bucket); err != nil {
+	for _, f := range dir {
+		fPath := dirPath + f.Name()
+		if err = uploadToCloud(client, fPath, Gcs.Bucket); err != nil {
 			fmt.Println(err)
 			continue
 		}
+		// Delete local files
+		if err = deleteLocal(fPath); err != nil {
+			return fmt.Errorf("os.Remove: %v", err)
+		}
+
 	}
 
 	return nil
@@ -121,11 +127,6 @@ func uploadToCloud(client *storage.Client, filePath string, bucket string) error
 	acl := client.Bucket(bucket).Object(filePath).ACL()
 	if err := acl.Set(ctx, storage.AllUsers, storage.RoleReader); err != nil {
 		return fmt.Errorf("ACLHandle.Set: %v", err)
-	}
-
-	// Delete local files
-	if err = deleteLocal(filePath); err != nil {
-		return fmt.Errorf("os.Remove: %v", err)
 	}
 
 	fmt.Printf("Success to upload bolb : %v \n", filePath)

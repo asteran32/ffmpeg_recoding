@@ -4,7 +4,6 @@ import (
 	"gcs/cloud"
 	"gcs/record"
 	"log"
-	"runtime"
 	"sync"
 	"time"
 )
@@ -13,7 +12,7 @@ var mutex = &sync.Mutex{}
 
 func main() {
 	// Use all CPU (4)
-	runtime.GOMAXPROCS(runtime.NumCPU())
+	// runtime.GOMAXPROCS(runtime.NumCPU() - 2)
 
 	// Setting ffmpeg recoding
 	f, err := record.InitRecording()
