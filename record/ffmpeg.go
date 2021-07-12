@@ -51,26 +51,21 @@ func (f *Ffmpeg) CreateDir() error {
 	return nil
 }
 
-func (f *Ffmpeg) RecordCam_multi(output []string) {
+func (f *Ffmpeg) Recording(c Camera) {
 	defer func() {
 		mutex.Unlock()
 	}()
 	mutex.Lock()
-
-	fmt.Printf("Start to record videos : %v \n", output)
-
-	// ffmpeg RTSP Command line only 3 camera
-	cmd := exec.Command("ffmpeg", "-rtsp_transport", "tcp",
-		"-i", f.Cam[0].Url, "-i", f.Cam[1].Url, "-i", f.Cam[2].Url,
-		"-vcodec", "libx264", "-an", "-bufsize", "3M",
-		"-map", "0:0", "-t", f.Cam[0].Time, output[0],
-		"-map", "1:0", "-t", f.Cam[0].Time, output[1])
+	cmd := exec.Command("ffmpeg", "-rtsp_transport", "tcp", "-i", c.Url,
+		"-c:v", "copy", "-threads", "0", "-an",
+		"-f", "segment", "-strftime", "1", "-segment_time", "00:10:00",
+		"-segment_atclocktime", "1", "-segment_clocktime_offset", "30", "-reset_timestamps", "1",
+		"-segment_format", "mp4", c.Name+"-%Y-%m-%d_%H-%M.mp4")
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return
 	}
-
 	cmd.Start()
 	oneByte := make([]byte, 1)
 	for {
@@ -83,20 +78,4 @@ func (f *Ffmpeg) RecordCam_multi(output []string) {
 
 	cmd.Wait()
 
-}
-
-func (f *Ffmpeg) RecordCam_single(time string, c Camera) {
-	defer func() {
-		mutex.Unlock()
-	}()
-
-	mutex.Lock()
-	output := c.Path + c.Name + "_" + time + ".mp4"
-
-	cmd := exec.Command("ffmpeg", "-rtsp_transport", "tcp", "-i", c.Url,
-		"-vcodec", c.Codec, "-an", "-max_delay", "1M", "-bufsize", "1M", "-t", c.Time, output)
-
-	fmt.Printf("Start to record video: %v \n", output)
-
-	cmd.Start()
 }

@@ -1,2 +1,12 @@
 ## json
 *.json
+
+# .mp4
+*.mp4
+
+# .txt
+*.txt
+
+# record folder
+cam01/
+cam03/

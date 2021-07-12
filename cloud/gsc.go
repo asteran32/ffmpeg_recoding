@@ -24,8 +24,6 @@ type GCS struct {
 	Credentials string `json:"credentials"`
 }
 
-// $env:GOOGLE_APPLICATION_CREDENTIALS='C:\Users\AAA\Desktop\Fine\record_ipcam\fine-dt-project-2021-06-11-3a741164c4ab.json'
-// export GOOGLE_APPLICATION_CREDENTIALS="/home/godheeran/Fine_recoring_sys/fine-dt-project-2021-06-11-3a741164c4ab.json"
 func InitStorage() error {
 	env, err := os.Open("gcs.json")
 	if err != nil {
@@ -41,6 +39,8 @@ func InitStorage() error {
 	return nil
 }
 
+// $env:GOOGLE_APPLICATION_CREDENTIALS='C:\ffmpeg_recoding\fine-dt-project-2021-06-11-3a741164c4ab.json'
+// export GOOGLE_APPLICATION_CREDENTIALS="/home/godheeran/Fine_recoring_sys/fine-dt-project-2021-06-11-3a741164c4ab.json"
 // Set google application credentials key path
 func (g *GCS) SetCredentials() error {
 	cmd := exec.Command("cmd", g.Credentials)
@@ -92,9 +92,9 @@ func UploadFiles(dirPath string) error {
 			continue
 		}
 		// Delete local files
-		if err = deleteLocal(fPath); err != nil {
-			return fmt.Errorf("os.Remove: %v", err)
-		}
+		// if err = deleteLocal(fPath); err != nil {
+		// 	return fmt.Errorf("os.Remove: %v", err)
+		// }
 
 	}
 
